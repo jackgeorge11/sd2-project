@@ -24,6 +24,12 @@ body {
     top: 0;
 }
 
+.logo-image {
+    width: 1rem;
+    height: 1rem;
+    padding: 5px;
+}
+
 .logo {
     font-size: 1rem;
     font-weight: 200;
@@ -34,11 +40,12 @@ body {
 }
 
 .logo:hover {
-    color: rgb(253, 235, 135);
+    color: #8dc7df;
 }
 
 .nav {
     display: flex;
+    align-items: center;
 }
 
 .nav-button {
@@ -51,7 +58,7 @@ body {
 }
 
 .nav-button:hover {
-    color: rgb(253, 235, 135);
+    color: #8dc7df;
 }
 
 /* INDEX */
@@ -80,7 +87,7 @@ body {
 }
 
 .post-title:hover {
-    color: #ab85d9;
+    color: #8dc7df;
 }
 
 .post-date {
@@ -100,7 +107,7 @@ body {
 }
 
 .post-author:hover {
-    color: #ab85d9;
+    color: #8dc7df;
 }
 
 .post-body {
