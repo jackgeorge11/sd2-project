@@ -2,6 +2,5 @@ extends includes/layout
 block content
     include includes/header
     include includes/post-component
-    include includes/post-component
-    include includes/post-component
-    include includes/post-component
+    each post in posts 
+        +post(post)
