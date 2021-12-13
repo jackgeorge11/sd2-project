@@ -17,15 +17,20 @@ app.set('views', path.join(__dirname, '../views'));
 
 //Route to index.pug
 app.get("/", function(req, res) {
-
-    sql = `
-        SELECT p.post_date, p.postTitle, p.postBody, p.id, u.username
-        FROM posts p
-            JOIN users u WHERE p.authorId = u.id;
-    `;
-    db.query(sql).then(results => {
-        res.render("index", {posts: results});
-    });
+    const feed = new Feed;
+    feed.getPosts().then(
+        Promise => {
+            res.render("index", {posts: feed.posts});
+        }
+    )
+    // sql = `
+    //     SELECT p.post_date, p.postTitle, p.postBody, p.id, u.username
+    //     FROM posts p
+    //         JOIN users u WHERE p.authorId = u.id;
+    // `;
+    // db.query(sql).then(results => {
+    //     res.render("index", {posts: results});
+    // });
 });
 
 //Attempt to get post by Id JH

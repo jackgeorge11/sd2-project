@@ -1,3 +1,5 @@
+const db = require('../services/db');
+
 class Feed {
     posts = [];
 
