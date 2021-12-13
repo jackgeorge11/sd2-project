@@ -1,7 +1,7 @@
 mixin post(p)
     .post-component
         .post-header
-            a(class='post-title' href=`/post/${p.id}`) #{p.postTitle}
-            p.post-date=p.post_date
+            a(class='post-title' href=`/post/${p.id}`) #{p.title}
+            p.post-date=p.date
         h2.post-author=p.username
-        p.post-body=p.postBody 
+        p.post-body=p.body 

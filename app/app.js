@@ -10,6 +10,7 @@ var path = require('path');
 
 // CLASSES
 const { Feed } = require("./models/feed");
+const { Post } = require("./models/post");
 
 //PUG template enginge for JG. 
 app.set('view engine', 'pug');
@@ -20,31 +21,21 @@ app.get("/", function(req, res) {
     const feed = new Feed;
     feed.getPosts().then(
         Promise => {
+            console.log(feed.posts)
             res.render("index", {posts: feed.posts});
         }
     )
-    // sql = `
-    //     SELECT p.post_date, p.postTitle, p.postBody, p.id, u.username
-    //     FROM posts p
-    //         JOIN users u WHERE p.authorId = u.id;
-    // `;
-    // db.query(sql).then(results => {
-    //     res.render("index", {posts: results});
-    // });
 });
 
 //Attempt to get post by Id JH
 app.get("/post/:id", function(req, res) {
     const _id = req.params.id;
-    sql = `
-        SELECT p.*, u.username
-        FROM posts p
-            JOIN users u ON p.authorId = u.id
-            WHERE p.id = ${_id}
-    `;
-    db.query(sql).then(results => {
-        res.render("post", {post: results});
-    })
+    const post = new Post;
+    post.getPost(_id).then(
+        Promise => {
+            res.render("post", {post: [post]});
+        }
+    )
 })
 
 

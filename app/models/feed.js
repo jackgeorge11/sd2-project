@@ -10,7 +10,19 @@ class Feed {
                 JOIN users u WHERE p.authorId = u.id;
         `;
         const results = await db.query(sql)
-        this.posts = results
+        let _posts = []
+        results.forEach((post) => {
+            let newPost = {
+                id: post.id,
+                title: post.postTitle,
+                date: post.post_date,
+                username: post.username,
+                authorId: post.authorId,
+                body: post.postBody
+            };
+            _posts.push(newPost)
+        })
+        this.posts = _posts
     }
 }
 
