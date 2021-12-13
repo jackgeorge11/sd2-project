@@ -1,7 +1,8 @@
 mixin post(p)
+    - console.log(p)
     .post-component
         .post-header
             a(class='post-title' href=`/post/${p.id}`) #{p.postTitle}
             p.post-date=p.post_date
-        h2.post-author user id: #{p.authorId}
+        h2.post-author=p.username
         p.post-body=p.postBody 

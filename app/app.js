@@ -14,11 +14,31 @@ app.set('views', path.join(__dirname, '../views'));
 
 //Route to index.pug
 app.get("/", function(req, res) {
-    sql = 'select * from posts';
+    sql = `
+        SELECT p.post_date, p.postTitle, p.postBody, p.id, u.username
+        FROM posts p
+            JOIN users u WHERE p.authorId = u.id;
+    `;
     db.query(sql).then(results => {
         res.render("index", {posts: results});
     });
 });
+
+//Attempt to get post by Id JH
+app.get("/post/:id", function(req, res) {
+    const _id = req.params.id;
+    sql = `
+        SELECT p.*, u.username
+        FROM posts p
+            JOIN users u ON p.authorId = u.id
+            WHERE p.id = ${_id}
+    `;
+    db.query(sql).then(results => {
+        res.render("post", {post: results});
+    })
+})
+
+
 
 //Check that the Database name matches the database name in TP's Database JH.
 app.get("/wellbeing-users", function(req, res) {
@@ -38,14 +58,6 @@ app.get("/wellbeing-posts", function(req, res) {
         res.send(results)
     });
 });
-//Attempt to get post by Id JH
-app.get("/post/:id", function(req, res) {
-    const _id = req.params.id;
-    sql = `select * from posts where id=${_id}`;
-    db.query(sql).then(results => {
-        res.render("post", {post: results[0]});
-    })
-})
 
     
 
