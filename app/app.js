@@ -8,12 +8,16 @@ const db = require('./services/db');
 
 var path = require('path');
 
+// CLASSES
+const { Feed } = require("./models/feed");
+
 //PUG template enginge for JG. 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, '../views'));
 
 //Route to index.pug
 app.get("/", function(req, res) {
+
     sql = `
         SELECT p.post_date, p.postTitle, p.postBody, p.id, u.username
         FROM posts p
