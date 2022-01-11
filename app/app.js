@@ -2,19 +2,27 @@ const express = require("express");
 
 var app = express();
 
+var session = require('express-session');
+app.use(session({
+  secret: 'secretkeysdfjsflyoifasd',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
 app.use(express.static("static"));
 
 const db = require('./services/db');
 
 var path = require('path');
 
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
  
 // create application/json parser
-var jsonParser = bodyParser.json()
+var jsonParser = bodyParser.json();
  
 // create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // CLASSES
 const { Feed } = require("./models/feed");
@@ -37,10 +45,10 @@ app.get('/login', function (req, res) {
 
 //Route to index.pug
 app.get("/", function(req, res) {
+    console.log(req.session)
     const feed = new Feed;
     feed.getPosts().then(
         Promise => {
-            console.log(feed.posts)
             res.render("index", {posts: feed.posts});
         }
     )
@@ -85,9 +93,11 @@ app.post('/set-password', urlencodedParser, function (req, res) {
     try {
         user.getIdFromEmail().then( uId => {
             if(uId) {
-                console.log('user exists')
+                console.log('user exists');
                  //if exising user is found then take them to the wellbeing page.
                 user.setUserPassword(password).then ( result => {
+                    req.session.uid = uId;
+                    req.session.loggedIn = true;
                     res.redirect('/');
                 });
             }
@@ -104,15 +114,18 @@ app.post('/set-password', urlencodedParser, function (req, res) {
      }
 });
 
-app.post('/authenticate', function (req, res) {
-    params = req.body;
-    var user = new user_info(params.email);
+app.post('/authenticate', urlencodedParser, function (req, res) {
+    const {email, password} = req.body;
+    console.log('email is:', email, 'password is:', password);
+    var user = new user_info(email);
     try {
         user.getIdFromEmail().then(uId => {
             if (uId) {
-                user.authenticate(params.password).then(match => {
+                user.authenticate(password).then(match => {
                     if (match) {
-                        res.redirect('/' + uId);
+                        req.session.uid = uId;
+                        req.session.loggedIn = true;
+                        res.redirect('/');
                     }
                     else {
                         res.send('invalid password');
