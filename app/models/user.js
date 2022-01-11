@@ -38,9 +38,10 @@ class user_info {
     //Add new user to user_info table
     async addUser(password) {
         const pw = await bcrypt.hash(password, 10);
+        console.log('hashed password is:', pw)
         var sql = "INSERT INTO user_info (email, pass) VALUES (? , ?)";
         const result = await db.query(sql, [this.email, pw]);
-        console.log(results.insertId);
+        console.log(result.insertId);
         this.id = result.insertId;
         return true;
 

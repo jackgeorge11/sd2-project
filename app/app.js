@@ -8,6 +8,14 @@ const db = require('./services/db');
 
 var path = require('path');
 
+var bodyParser = require('body-parser')
+ 
+// create application/json parser
+var jsonParser = bodyParser.json()
+ 
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 // CLASSES
 const { Feed } = require("./models/feed");
 const { Post } = require("./models/post");
@@ -70,20 +78,23 @@ app.get("/wellbeing-posts", function(req, res) {
     });
 });
 
-app.post('/set-password', function (req, res) {
-    params = req.body;
-    var user = new user_info(params.email);
+app.post('/set-password', urlencodedParser, function (req, res) {
+    const {email, password} = req.body;
+    console.log('email is:', email, 'password is:', password);
+    var user = new user_info(email);
     try {
         user.getIdFromEmail().then( uId => {
             if(uId) {
+                console.log('user exists')
                  //if exising user is found then take them to the wellbeing page.
-                user.setUserPassword(params.password).then ( result => {
-                    res.redirect('/' + uId);
+                user.setUserPassword(password).then ( result => {
+                    res.redirect('/');
                 });
             }
             else {
                 // If no existing user is found, add a new one
-                user.addUser(params.email).then( Promise => {
+                console.log('user doesnt exist')
+                user.addUser(email).then( Promise => {
                     res.send('user does not exist in database');
                 });
             }
