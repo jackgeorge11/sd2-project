@@ -1,21 +1,17 @@
 const db = require('../services/db');
 const bcrypt = require("bcryptjs"); //encrypt and compare passwwords
+const uniqid = require("uniqid"); //generate unique ids
 
-class user_info {
-    //User id
+class User {
     id;
-
-    //User email
     email;
-
-    constructor(email) {
-        this.email = email;
-    }
+    username;
+    password;
 
     //checking existing user id from an email address
-    async getIdFromEmail() {
-        var sql = "SELECT id FROM user_info WHERE user_info.email = ?";
-        const result = await db.query(sql, [this.email]);
+    async getIdFromEmail(email) {
+        var sql = "SELECT id FROM user WHERE user.email = ?";
+        const result = await db.query(sql, [email]);
         if (JSON.stringify(result) != '[]') {
             this.id = result[0].id;
             return this.id;
@@ -26,25 +22,29 @@ class user_info {
 
     }
 
-    //add password to existing user
-    async setUserPassword(password) {
-        const pw = await bcrypt.hash(password, 10);
-        var sql = "UPDATE user_info SET pass = ? WHERE user_info.id = ?";
-        const result = await db.query(sql, [pw, this.id]);
-        return this.id;
-
+    async findUserById(id) {
+        var sql = "SELECT id FROM user WHERE user.email = ?";
+        const result = await db.query(sql, [id]);
+        if (JSON.stringify(result) != '[]') {
+            this.id = result[0].id;
+            return this.id;
+        }
+        else{
+            return false;
+        }
     }
 
     //Add new user to user_info table
-    async addUser(password) {
-        const pw = await bcrypt.hash(password, 10);
-        console.log('hashed password is:', pw)
-        var sql = "INSERT INTO user_info (email, pass) VALUES (? , ?)";
-        const result = await db.query(sql, [this.email, pw]);
-        console.log(result.insertId);
-        this.id = result.insertId;
+    async addUser(email, username, password) {
+        this.email = email;
+        this.username = username;
+        this.password = await bcrypt.hash(password, 10);
+        this.id = uniqid();
+        console.log('hashed password is:', this.password, '| uniqid is:', this.id, '| email is:', this.email, '| username is:', this.username);
+        var sql = "INSERT INTO users (id, email, username, user_password) VALUES (? , ? , ? , ?)";
+        const result = await db.query(sql, [this.id, this.email, this.username, this.password]);
+        console.log(result);
         return true;
-
     }
 
     //Authentication
@@ -62,5 +62,5 @@ class user_info {
 }
 
 module.exports = {
-    user_info
+    User
 }

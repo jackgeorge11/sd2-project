@@ -1,9 +1,11 @@
 extends includes/layout 
 block content 
     h1 Register here 
-    form(action='/set-password' method='POST')
+    form(action='/register' method='POST')
         label(for='email') Enter your email: 
         input('name'='email')
-        label(for='email') Enter your password: 
+        label(for='username') Enter a username: 
+        input('name'='username')
+        label(for='passsword') Enter a password: 
         input('name'='password')
         input(type='submit' value='Submit')

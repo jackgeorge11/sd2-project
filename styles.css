@@ -115,4 +115,12 @@ body {
     font-weight: 200;
 }
 
-/* POST */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    margin: 5px 0;
+}
