@@ -2,8 +2,9 @@ extends includes/layout
 block content 
     h1 Login here 
     form(action='login' method='POST')
-    label(for='username') Enter your username: 
-    input('name'='username')
-    label(for='email') Enter your password: 
-    input('name'='password')
-    input(type='submit' value='Submit')
+        label(for='username') Enter your username: 
+        input('name'='username')
+        label(for='email') Enter your password: 
+        input('name'='password')
+        input(type='submit' value='Submit')
+    a(href='/register' class='auth-action') Don't have an account? Register

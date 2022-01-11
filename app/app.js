@@ -45,7 +45,7 @@ app.get("/", function (req, res) {
                     res.render("index", { posts: feed.posts, user_id: user.user_id });
                 })
             } else {
-                res.render("index", { posts: feed.posts, user_id: false });
+                res.redirect("login");
             }
         }
     )

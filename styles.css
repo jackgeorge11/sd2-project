@@ -124,3 +124,14 @@ form {
 input {
     margin: 5px 0;
 }
+
+.auth-action {
+    color: #005644;
+    transition: all .25s;
+    text-decoration: underline;
+    width: fit-content;
+}
+
+.auth-action:hover {
+    color: #8dc7df;
+}
