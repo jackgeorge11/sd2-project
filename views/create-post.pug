@@ -1,0 +1,10 @@
+extends includes/layout 
+block content 
+    include includes/header
+    h1 Create a post
+    form(action='create-post' method='POST')
+        label(for='title') Enter a title: 
+        input('name'='title')
+        label(for='body') Enter a post body: 
+        input('name'='body')
+        input(type='submit' value='Create')

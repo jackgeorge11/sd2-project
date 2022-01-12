@@ -40,26 +40,70 @@ app.get("/", function (req, res) {
     const user = new User;
     feed.getPosts().then(
         Promise => {
-            if (req?.session?.user_id) {
-                user.findUserById(req.session.user_id).then(Promise => {
+            if (req?.session?._id) {
+                user.findUserById(req.session._id).then(Promise => {
                     res.render("index", { posts: feed.posts, user_id: user.user_id });
                 })
             } else {
-                res.redirect("login");
+                res.redirect("/login");
             }
         }
     )
 });
 
-//Attempt to get post by Id JH
+//Attempt to get post by Id
 app.get("/post/:id", function (req, res) {
     const _id = req.params.id;
+    const sessionId = req?.session?._id;
     const post = new Post;
-    post.getPost(_id).then(
-        Promise => {
-            res.render("post", { post: [post] });
+    if (sessionId) {
+        try {
+            post.getPost(_id, sessionId).then(
+                Promise => {
+                    console.log(`is aithroactive? lets find out: ${post.authorActive}`)
+                    res.render("post", { post: [post], authorActive: post.authorActive });
+                }
+            )
+        } catch (err) {
+            console.log(err);
+            res.redirect("/login");
         }
-    )
+    } else {
+        res.redirect("/login");
+    }    
+});
+
+//Create Post GET
+app.get("/create-post", function (req, res) {
+    const _id = req?.session?._id;
+    const post = new Post;
+    const user = new User;
+    if (req?.session?._id) {
+        try {
+            user.findUserById(req.session._id).then(Promise => {
+                res.render("create-post");
+            })
+        } catch (err) {
+            console.log(err);
+            res.redirect("/login");
+        }
+    } else {
+        res.redirect("/login");
+    }
+});
+
+
+//Create Post POST
+app.post("/create-post", urlencodedParser, function (req, res) {
+    const _id = req?.session?._id;
+    const { title, body } = req.body;
+    console.log(`user id is: ${_id}`)
+    const post = new Post;
+    if (_id) {
+        post.createPost(_id, title, body).then(Promise => {
+            res.redirect(`/`);
+        })
+    }
 });
 
 //Route for Login
@@ -68,27 +112,21 @@ app.get('/login', function (req, res) {
 });
 
 app.post('/login', urlencodedParser, function (req, res) {
-    const { email, password } = req.body;
-    console.log('email is:', email, 'password is:', password);
-    var user = new user_info(email);
+    const { username, password } = req.body;
+    console.log('username is:', username, 'password is:', password);
+    var user = new User;
     try {
-        user.getIdFromEmail().then(uId => {
-            if (uId) {
-                user.authenticate(password).then(match => {
-                    if (match) {
-                        req.session.uid = uId;
-                        req.session.loggedIn = true;
-                        res.redirect('/');
-                    }
-                    else {
-                        res.send('invalid password');
-                    }
-                });
+        user.authenticate(username, password).then(result => {
+            if (result.match) {
+                req.session._id = result._id;
+                req.session.loggedIn = true;
+                res.redirect('/');
             }
             else {
-                res.send('invalid email');
+                res.send('invalid password');
             }
-        })
+        });
+
     } catch (err) {
         console.error(`Error while comparing `, err.message);
     }

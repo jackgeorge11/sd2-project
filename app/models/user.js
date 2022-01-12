@@ -23,11 +23,10 @@ class User {
     }
 
     async findUserById(id) {
-        var sql = "SELECT id FROM user WHERE user.email = ?";
+        var sql = "SELECT id FROM users WHERE users.id = ?";
         const result = await db.query(sql, [id]);
         if (JSON.stringify(result) != '[]') {
-            this.id = result[0].id;
-            return this.id;
+            return result[0].id;
         }
         else{
             return false;
@@ -48,16 +47,19 @@ class User {
     }
 
     //Authentication
-    async authenticate(submitted) {
-        var sql = "SELECT pass FROM user_info WHERE id = ? ";
-        const result = await bcrypt.compare(submitted, result[0].password);
+    async authenticate(username, password) {
+        console.log(username, password)
+        var sql = "SELECT user_password, id FROM users WHERE username = ? ";
+        const result = await db.query(sql, [username]);
+        console.log(result)
+        const match = await bcrypt.compare(password, result[0].user_password);
+        console.log(match)
         if (match == true) {
-            return true;
+            return {match: true, _id:  result[0].id};
         }
         else {
             return false;
         }
-
     }
 }
 

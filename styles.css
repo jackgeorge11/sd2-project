@@ -55,6 +55,8 @@ body {
     padding: .5rem;
     cursor: pointer;
     transition: color .25s;
+    color: white;
+    text-decoration: none;
 }
 
 .nav-button:hover {
