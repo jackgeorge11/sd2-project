@@ -10,7 +10,7 @@ class User {
 
     //checking existing user id from an email address
     async getIdFromEmail(email) {
-        var sql = "SELECT id FROM user WHERE user.email = ?";
+        var sql = "SELECT id FROM users WHERE users.email = ?";
         const result = await db.query(sql, [email]);
         if (JSON.stringify(result) != '[]') {
             this.id = result[0].id;
