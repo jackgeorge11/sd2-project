@@ -61,7 +61,7 @@ app.get("/post/:id", function (req, res) {
             post.getPost(_id, sessionId).then(
                 Promise => {
                     console.log(`is aithroactive? lets find out: ${post.authorActive}`)
-                    res.render("post", { post: [post], authorActive: post.authorActive });
+                    res.render("post", { post: [post] });
                 }
             )
         } catch (err) {
@@ -75,12 +75,11 @@ app.get("/post/:id", function (req, res) {
 
 //Create Post GET
 app.get("/create-post", function (req, res) {
-    const _id = req?.session?._id;
-    const post = new Post;
+    const sessionId = req?.session?._id;
     const user = new User;
-    if (req?.session?._id) {
+    if (sessionId) {
         try {
-            user.findUserById(req.session._id).then(Promise => {
+            user.findUserById(sessionId).then(Promise => {
                 res.render("create-post");
             })
         } catch (err) {
@@ -103,6 +102,74 @@ app.post("/create-post", urlencodedParser, function (req, res) {
         post.createPost(_id, title, body).then(Promise => {
             res.redirect(`/`);
         })
+    }
+});
+
+//edit post GET
+app.get("/edit-post/:id", function (req, res) {
+    const _id = req?.params?.id;
+    const sessionId = req?.session?._id;
+    const post = new Post;
+    const user = new User;
+    if (sessionId) {
+        try {
+            user.findUserById(req.session._id).then(Promise => {
+                post.getPost(_id).then(Promise => {
+                    res.render("edit-post", { post: post });
+                })
+            })
+        } catch (err) {
+            console.log(err);
+            res.redirect("/login");
+        }
+    } else {
+        res.redirect("/login");
+    }
+});
+
+//Edit Post POST
+app.post("/edit-post/:id", urlencodedParser, function (req, res) {
+    const _id = req?.params?.id;
+    const sessionId = req?.session?._id;
+    const {title, body} = req.body;
+    console.log(`app js says the edited post content is: ${title, body}`)
+    const post = new Post;
+    const user = new User;
+    if (sessionId) {
+        try {
+            user.findUserById(sessionId).then(Promise => {
+                post.editPost(_id, title, body).then(Promise => {
+                    res.redirect("/");
+                })
+            })
+        } catch (err) {
+            console.log(err);
+            res.redirect("/login");
+        }
+    } else {
+        res.redirect("/login");
+    }
+});
+
+//delete post
+app.get("/delete-post/:id", function (req, res) {
+    const _id = req?.params?.id;
+    const sessionId = req?.session?._id;
+    const post = new Post;
+    const user = new User;
+    if (sessionId) {
+        try {
+            user.findUserById(req.session._id).then(Promise => {
+                post.deletePost(_id).then(Promise => {
+                    res.redirect("/");
+                })
+            })
+        } catch (err) {
+            console.log(err);
+            res.redirect("/login");
+        }
+    } else {
+        res.redirect("/login");
     }
 });
 

@@ -5,3 +5,7 @@ mixin post(p)
             p.post-date=p.date
         h2.post-author=p.username
         p.post-body=p.body 
+        if p.authorActive
+            .post-footer
+                a(href=`/edit-post/${p.id}` class="edit-post") edit post
+                a(href=`/delete-post/${p.id}` class="edit-post") delete post

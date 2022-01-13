@@ -29,7 +29,7 @@ class Post {
         this.authorId = post.authorId;
         if (this.authorId === sessionId) {
             this.authorActive = true;
-        } else {this.authorActive = false}
+        } else { this.authorActive = false }
     }
 
     async createPost(_id, title, body) {
@@ -41,6 +41,23 @@ class Post {
         const results = await db.query(sql, [newPostId, _id, now, title, body])
         return true
     }
+
+    async editPost(_id, title, body) {
+        var sql = `UPDATE posts
+        SET postBody = '${body}', postTitle = '${title}'
+        WHERE id = '${_id}'
+        `;
+        const results = await db.query(sql)
+        return true;
+    }
+
+    async deletePost(_id) {
+        var sql = `
+        DELETE FROM posts WHERE id = '${_id}'
+        `;
+        const results = await db.query(sql)
+    }
+
 }
 
 module.exports = {

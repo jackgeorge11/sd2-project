@@ -1,0 +1,10 @@
+extends includes/layout 
+block content 
+    include includes/header
+    h1 Edit your post
+    form(action=`/edit-post/${post.id}` method='POST')
+        label(for='title') Update your title: 
+        input('name'='title' placeholder=`${post.title}`)
+        label(for='body') Enter your body: 
+        textarea('name'='body' placeholder=`${post.body}` rows="4" cols="50")
+        input(type='submit' value='Update')
